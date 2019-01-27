@@ -26,6 +26,11 @@ def push_text(text, to):
     return requests.post(ep, data=json.dumps(body, ensure_ascii=False).encode('utf-8'), headers=HEADER)
 
 
+def get_connection():
+    dsn = os.environ.get('DATABASE_URL')
+    return psycopg2.connect(dsn)
+
+
 def fetch_giga():
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
@@ -50,7 +55,21 @@ def fetch_giga():
     driver.close()
     driver.quit()
 
-    return gb
+    return float(gb)
+
+
+def fetch_latest():
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute('select value from logs where key = %s;', ('latest', ))
+            (latest, ) = cur.fetchone()
+    return float(latest)
+
+
+def save_latest(value):
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute('update logs set value = %s where key = %s;', (value, 'latest'))
 
 
 def one_off_report(token):
@@ -61,7 +80,6 @@ def one_off_report(token):
         push_text("データ残量の確認がリクエストされました。", MASTER)
 
     giga = fetch_giga()
-
     push_text(f"おまたせ！\n今月のデータ残量は {giga} GBだよ!", USER)
     if debug:
         push_text(f"おまたせ！\n今月のデータ残量は {giga} GBだよ!", MASTER)
@@ -72,9 +90,12 @@ def timed_report():
     debug = os.environ.get('DEBUG', False)
 
     giga = fetch_giga()
-    push_text(f"今月のデータ残量はあと {giga} GBだよ！", USER)
-    if debug:
-        push_text(f"今月のデータ残量はあと {giga} GBだよ！", MASTER)
+    latest = fetch_latest()
+    if int(giga * 10) != int(latest * 10):
+        push_text(f"今月のデータ残量が残り {giga} GBになったよ！", USER)
+        if debug:
+            push_text(f"今月のデータ残量が残り {giga} GBになったよ！", MASTER)
+    save_latest(giga)
 
 
 @route('/callback', method='POST')
