@@ -9,6 +9,8 @@ from selenium import webdriver
 import chromedriver_binary
 
 CAT = os.environ.get('CHANNEL_ACCESS_TOKEN')
+MASTER = os.environ.get('MASTER')
+USER = os.environ.get('USER')
 HEADER = {'Content-Type': 'application/json', 'Authorization': f"Bearer {CAT}"}
 
 
@@ -51,6 +53,12 @@ def fetch_giga():
     return gb
 
 
+@route('report', method='POST')
+def report():
+    giga = fetch_giga()
+    push_text(f"今月のデータ残量はあと {giga} GBだよ！", USER)
+
+
 @route('/callback', method='POST')
 def callback():
     for event in request.json.get('events'):
@@ -59,7 +67,9 @@ def callback():
         source = event['source']['userId']
         if event['type'] == 'message':
             message = event['message']
-            if not message['type'] == 'text':
+            if not source == USER or not source == MASTER:
+                reply_text('ごめんなさい！個別のメッセージ返信にはまだ対応していないよ！', reply_token)
+            elif not message['type'] == 'text':
                 reply_text('テキストメッセージ以外には対応していないよ！', reply_token)
             elif not message['text'] == "データ":
                 reply_text('「データ」と言うとデータ残量を返すよ！', reply_token)
