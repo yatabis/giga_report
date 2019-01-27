@@ -92,7 +92,7 @@ def callback():
             elif not message['text'] == "データ":
                 reply_text('「データ」と言うとデータ残量を返すよ！', reply_token)
             else:
-                timed_report(reply_token)
+                one_off_report(reply_token)
 
 
 if __name__ == '__main__':
