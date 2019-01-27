@@ -17,7 +17,11 @@ def reply_text(text, token):
 
 
 def fetch_giga():
-    driver = webdriver.Chrome('/app/.apt/usr/bin/google-chrome')
+    options = Options()
+    options.binary_location = '/app/.apt/usr/bin/google-chrome'
+    options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+    driver = webdriver.Chrome(chrome_options=options)
     driver.get(os.environ.get('LOGIN_URL'))
 
     driver.find_element_by_name('telnum').send_keys(os.environ.get('TEL_NUM'))
@@ -49,8 +53,9 @@ def callback():
             elif not message['text'] == "データ":
                 reply_text('「データ」と言うとデータ残量を返すよ！', reply_token)
             else:
+                reply_text("今月のデータ残量が知りたいんだね？\nわかった、調べてくるよ！\nちょっと待っててね！")
                 giga = fetch_giga()
-                result = reply_text(f"今月のデータ残量は {giga} GBだよ!", reply_token)
+                result = reply_text(f"おまたせ！\n今月のデータ残量は {giga} GBだよ!", reply_token)
                 pprint(result)
 
 
