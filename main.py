@@ -85,7 +85,7 @@ def callback():
         source = event['source']['userId']
         if event['type'] == 'message':
             message = event['message']
-            if not source == USER or not source == MASTER:
+            if not source == USER and not source == MASTER:
                 reply_text('ごめんなさい！個別のメッセージ返信にはまだ対応していないよ！', reply_token)
             elif not message['type'] == 'text':
                 reply_text('テキストメッセージ以外には対応していないよ！', reply_token)
