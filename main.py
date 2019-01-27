@@ -62,6 +62,4 @@ def callback():
 
 
 if __name__ == '__main__':
-    print(fetch_giga())
-else:
     run(host='0.0.0.0', port=int(os.environ.get('PORT', 443)))
