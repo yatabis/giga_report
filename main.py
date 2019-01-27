@@ -17,6 +17,12 @@ def reply_text(text, token):
     requests.post(ep, data=json.dumps(body, ensure_ascii=False).encode('utf-8'), headers=HEADER)
 
 
+def push_text(text, to):
+    ep = "https://api.line.me/v2/bot/message/push"
+    body = {'to': to, 'messages': [{'type': 'text', 'text': text}]}
+    return requests.post(ep, data=json.dumps(body, ensure_ascii=False).encode('utf-8'), headers=HEADER)
+
+
 def fetch_giga():
     options= webdriver.ChromeOptions()
     options.add_argument('--headless')
@@ -33,6 +39,10 @@ def fetch_giga():
     gb = driver.find_element_by_xpath(
         "//*[@id='contents-body']/form/div[3]/div/div/div[2]/table/tbody/tr[2]/th/div/div[2]/span").text
     print(gb)
+    driver.find_element_by_id('js-toggle-menu').click()
+    driver.find_element_by_xpath('//*[@id="js-toggle-menu-contents"]/p[2]/a').click()
+    time.sleep(3)
+    print(driver.current_url)
 
     driver.close()
     driver.quit()
@@ -45,6 +55,7 @@ def callback():
     for event in request.json.get('events'):
         pprint(event)
         reply_token = event.get('replyToken', None)
+        source = event['source']['userId']
         if event['type'] == 'message':
             message = event['message']
             if not message['type'] == 'text':
@@ -54,7 +65,7 @@ def callback():
             else:
                 reply_text("今月のデータ残量が知りたいんだね？\nわかった、調べてくるよ！\nちょっと待っててね！", reply_token)
                 giga = fetch_giga()
-                reply_text(f"おまたせ！\n今月のデータ残量は {giga} GBだよ!", reply_token)
+                push_text(f"おまたせ！\n今月のデータ残量は {giga} GBだよ!", source)
 
 
 if __name__ == '__main__':
