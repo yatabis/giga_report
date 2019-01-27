@@ -1,5 +1,10 @@
-from bottle import run, route, request
+import json
+import os
 from pprint import pprint
+
+from bottle import run, route, request
+import requests
+from selenium import webdriver
 
 CAT = os.environ.get('CHANNEL_ACCESS_TOKEN')
 HEADER = {'Content-Type': 'application/json', 'Authorization': f"Bearer {CAT}"}
@@ -29,6 +34,8 @@ def fetch_giga():
     driver.close()
     driver.quit()
 
+    return gb.text
+
 
 @route('/callback', method='POST')
 def callback():
@@ -45,3 +52,7 @@ def callback():
                     giga = fetch_giga()
                     result = reply_text(f"今月のデータ残量は {giga} GBだよ!", reply_token)
                     pprint(result)
+
+
+if __name__ == '__main__':
+    run(host='0.0.0.0', port=int(os.environ.get('PORT', 443)))
