@@ -46,7 +46,7 @@ def callback():
             message = event['message']
             if not message['type'] == 'text':
                 reply_text('テキストメッセージ以外には対応していないよ！', reply_token)
-            elif message['text'] == "データ":
+            elif not message['text'] == "データ":
                 reply_text('「データ」と言うとデータ残量を返すよ！', reply_token)
             else:
                 giga = fetch_giga()
