@@ -43,7 +43,7 @@ def callback():
         pprint(event)
         reply_token = event.get('replyToken', None)
         if event['type'] == 'message':
-            for message in event['messages']:
+            for message in event['message']:
                 if not message['type'] == 'text':
                     reply_text('テキストメッセージ以外には対応していないよ！', reply_token)
                 elif message['text'] == "データ":
