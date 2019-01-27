@@ -17,7 +17,7 @@ def reply_text(text, token):
 
 
 def fetch_giga():
-    driver = webdriver.Chrome('./chromedriver')
+    driver = webdriver.Chrome('/app/.apt/usr/bin/google-chrome')
     driver.get(os.environ.get('LOGIN_URL'))
 
     driver.find_element_by_name('telnum').send_keys(os.environ.get('TEL_NUM'))
