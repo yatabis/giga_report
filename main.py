@@ -49,7 +49,7 @@ def callback():
             elif not message['text'] == "データ":
                 reply_text('「データ」と言うとデータ残量を返すよ！', reply_token)
             else:
-                reply_text("今月のデータ残量が知りたいんだね？\nわかった、調べてくるよ！\nちょっと待っててね！", token)
+                reply_text("今月のデータ残量が知りたいんだね？\nわかった、調べてくるよ！\nちょっと待っててね！", reply_token)
                 giga = fetch_giga()
                 result = reply_text(f"おまたせ！\n今月のデータ残量は {giga} GBだよ!", reply_token)
                 pprint(result)
