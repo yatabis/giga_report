@@ -27,7 +27,7 @@ def push_text(text, to):
 
 
 def fetch_giga():
-    options= webdriver.ChromeOptions()
+    options = webdriver.ChromeOptions()
     options.add_argument('--headless')
     driver = webdriver.Chrome(options=options)
 
@@ -53,10 +53,28 @@ def fetch_giga():
     return gb
 
 
+def one_off_report(token):
+    debug = os.environ.get('DEBUG', False)
+
+    reply_text("今月のデータ残量が知りたいんだね？\nわかった、調べてくるよ！\nちょっと待っててね！", token)
+    if debug:
+        push_text("データ残量の確認がリクエストされました。", MASTER)
+
+    giga = fetch_giga()
+
+    push_text(f"おまたせ！\n今月のデータ残量は {giga} GBだよ!", USER)
+    if debug:
+        push_text(f"おまたせ！\n今月のデータ残量は {giga} GBだよ!", MASTER)
+
+
 @route('report', method='POST')
-def report():
+def timed_report():
+    debug = os.environ.get('DEBUG', False)
+
     giga = fetch_giga()
     push_text(f"今月のデータ残量はあと {giga} GBだよ！", USER)
+    if debug:
+        push_text(f"今月のデータ残量はあと {giga} GBだよ！", MASTER)
 
 
 @route('/callback', method='POST')
@@ -74,9 +92,7 @@ def callback():
             elif not message['text'] == "データ":
                 reply_text('「データ」と言うとデータ残量を返すよ！', reply_token)
             else:
-                reply_text("今月のデータ残量が知りたいんだね？\nわかった、調べてくるよ！\nちょっと待っててね！", reply_token)
-                giga = fetch_giga()
-                push_text(f"おまたせ！\n今月のデータ残量は {giga} GBだよ!", source)
+                timed_report(reply_token)
 
 
 if __name__ == '__main__':
