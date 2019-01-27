@@ -5,7 +5,8 @@ from pprint import pprint
 from bottle import run, route, request
 import requests
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+# from selenium.webdriver.chrome.options import Options
+import chromedriver_binary
 
 CAT = os.environ.get('CHANNEL_ACCESS_TOKEN')
 HEADER = {'Content-Type': 'application/json', 'Authorization': f"Bearer {CAT}"}
@@ -18,11 +19,12 @@ def reply_text(text, token):
 
 
 def fetch_giga():
-    options = Options()
-    options.binary_location = '/app/.apt/usr/bin/google-chrome'
-    options.add_argument('--headless')
-    options.add_argument('--disable-gpu')
-    driver = webdriver.Chrome(chrome_options=options)
+    # options = Options()
+    # options.binary_location = '/app/.apt/usr/bin/google-chrome'
+    # options.add_argument('--headless')
+    # options.add_argument('--disable-gpu')
+    # driver = webdriver.Chrome(chrome_options=options)
+    driver = webdriver.Chrome()
 
     driver.get(os.environ.get('LOGIN_URL'))
     driver.find_element_by_name('telnum').send_keys(os.environ.get('TEL_NUM'))
