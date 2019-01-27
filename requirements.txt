@@ -1,5 +1,6 @@
 bottle==0.12.16
 chromedriver-binary==2.45.0
 pytz==2017.3
+psycopg2==2.7.5
 requests==2.21.0
 selenium==3.141.0
