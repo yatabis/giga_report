@@ -4,9 +4,10 @@ from pprint import pprint
 import time
 
 from bottle import run, route, request
+import chromedriver_binary
+import psycopg2
 import requests
 from selenium import webdriver
-import chromedriver_binary
 
 CAT = os.environ.get('CHANNEL_ACCESS_TOKEN')
 MASTER = os.environ.get('MASTER')
