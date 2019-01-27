@@ -43,15 +43,15 @@ def callback():
         pprint(event)
         reply_token = event.get('replyToken', None)
         if event['type'] == 'message':
-            for message in event['message']:
-                if not message['type'] == 'text':
-                    reply_text('テキストメッセージ以外には対応していないよ！', reply_token)
-                elif message['text'] == "データ":
-                    reply_text('「データ」と言うとデータ残量を返すよ！', reply_token)
-                else:
-                    giga = fetch_giga()
-                    result = reply_text(f"今月のデータ残量は {giga} GBだよ!", reply_token)
-                    pprint(result)
+            message = event['message']
+            if not message['type'] == 'text':
+                reply_text('テキストメッセージ以外には対応していないよ！', reply_token)
+            elif message['text'] == "データ":
+                reply_text('「データ」と言うとデータ残量を返すよ！', reply_token)
+            else:
+                giga = fetch_giga()
+                result = reply_text(f"今月のデータ残量は {giga} GBだよ!", reply_token)
+                pprint(result)
 
 
 if __name__ == '__main__':
