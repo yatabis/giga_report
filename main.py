@@ -56,7 +56,7 @@ def fetch_giga():
 def one_off_report(token):
     debug = os.environ.get('DEBUG', False)
 
-    reply_text("今月のデータ残量が知りたいんだね？\nわかった、調べてくるよ！\nちょっと待っててね！", token)
+    reply_text("今月のデータ残量が知りたいんだね？\nわかった、調べてくるよ！\nちょっと待っててね！\nこの処理は最大で3分程かかる事があります。", token)
     if debug:
         push_text("データ残量の確認がリクエストされました。", MASTER)
 
@@ -67,7 +67,7 @@ def one_off_report(token):
         push_text(f"おまたせ！\n今月のデータ残量は {giga} GBだよ!", MASTER)
 
 
-@route('report', method='POST')
+@route('/report', method='POST')
 def timed_report():
     debug = os.environ.get('DEBUG', False)
 
