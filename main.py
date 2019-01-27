@@ -5,6 +5,7 @@ from pprint import pprint
 from bottle import run, route, request
 import requests
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
 CAT = os.environ.get('CHANNEL_ACCESS_TOKEN')
 HEADER = {'Content-Type': 'application/json', 'Authorization': f"Bearer {CAT}"}
