@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import os
 from pprint import pprint
@@ -12,6 +13,8 @@ from selenium import webdriver
 CAT = os.environ.get('CHANNEL_ACCESS_TOKEN')
 MASTER = os.environ.get('MASTER')
 USER = os.environ.get('USER')
+API_KEY = os.environ.get('API_KEY')
+APP_ID = os.environ.get('APP_ID')
 HEADER = {'Content-Type': 'application/json', 'Authorization': f"Bearer {CAT}"}
 
 
@@ -81,6 +84,40 @@ def save_latest(value):
             cur.execute('update logs set value = %s where key = %s;', (value, 'latest'))
 
 
+def create_chat(text):
+    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    ep = f"https://api.apigw.smt.docomo.ne.jp/naturalChatting/v1/dialogue?APIKEY={API_KEY}"
+    header = {"Content-Type": "application/json;charset=UTF-8"}
+    body = {
+        "language": "ja-JP",
+        "botId": "Chatting",
+        "appId": APP_ID,
+        "voiceText": text,
+        "clientData": {
+            "option": {
+                "nickname": "ひろ",
+                "sex": "女",
+                "bloodtype": "AB",
+                "birthdayY": 1968,
+                "birthdayM": 11,
+                "birthdayD": 5,
+                "age": 50,
+                "constellations": "蠍座",
+                "place": "大阪",
+                "mode": "dialog"
+            }
+        },
+        "appRecvTime": "1999-01-01 00:00:00",
+        "appSendTime": now
+    }
+    req = requests.post(ep, data=json.dumps(body, ensure_ascii=False).encode('utf-8'), headers=header)
+    if req.status_code == 200:
+        chat = req.json()['systemText']['expression']
+    else:
+        chat = "データと言ってくれるとデータ残量を調べてくるよ。"
+    return chat
+
+
 def one_off_report(token):
     debug = os.environ.get('DEBUG', False)
 
@@ -121,7 +158,7 @@ def callback():
             elif not message['type'] == 'text':
                 reply_text('テキストメッセージ以外には対応していないよ！', reply_token)
             elif not message['text'] == "データ":
-                reply_text('「データ」と言うとデータ残量を返すよ！', reply_token)
+                reply_text(create_chat(message['text']), reply_token)
             else:
                 one_off_report(reply_token)
         elif event['type'] == 'postback':
