@@ -59,6 +59,14 @@ def fetch_giga():
     return float(gb)
 
 
+def fetch_interval():
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute('select value from logs where key = %s;', ('interval', ))
+            (interval, ) = cur.fetchone()
+    return int(interval)
+
+
 def fetch_latest():
     with get_connection() as conn:
         with conn.cursor() as cur:
@@ -76,14 +84,14 @@ def save_latest(value):
 def one_off_report(token):
     debug = os.environ.get('DEBUG', False)
 
-    reply_text("今月のデータ残量が知りたいんだね？\nわかった、調べてくるよ！\nちょっと待っててね！\nこの処理は最大で3分程かかる事があります。", token)
+    reply_text("今月のデータ残量が知りたいんだね？\nわかった、調べてくるよ！\nちょっと待っててね！\n\n※この処理は最大で3分程かかる事があります。", token)
     if debug:
         push_text("データ残量の確認がリクエストされました。", MASTER)
 
     giga = fetch_giga()
     push_text(f"おまたせ！\n今月のデータ残量は {giga} GBだよ!", USER)
     if debug:
-        push_text(f"おまたせ！\n今月のデータ残量は {giga} GBだよ!", MASTER)
+        push_text(f"今月のデータ残量は {giga} GBでした。", MASTER)
 
 
 @route('/report', method='POST')
@@ -92,11 +100,12 @@ def timed_report():
 
     giga = fetch_giga()
     latest = fetch_latest()
-    if int(giga * 10) != int(latest * 10):
+    interval = fetch_interval()
+    if giga * 1000 // interval != latest * 1000 // interval:
         push_text(f"今月のデータ残量が残り {giga} GBになったよ！", USER)
         if debug:
             push_text(f"今月のデータ残量が残り {giga} GBになったよ！", MASTER)
-    save_latest(giga)
+        save_latest(giga)
 
 
 @route('/callback', method='POST')
