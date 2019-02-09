@@ -125,7 +125,7 @@ def callback():
             else:
                 one_off_report(reply_token)
         elif event['type'] == 'postback':
-            if event['postback']['data'] == 'data':
+            if event['postback']['data'] == 'action=data':
                 one_off_report(reply_token)
 
 
