@@ -62,26 +62,25 @@ def fetch_giga():
     return float(gb)
 
 
-def fetch_interval():
+def fetch_db(key):
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute('select value from logs where key = %s;', ('interval', ))
-            (interval, ) = cur.fetchone()
-    return int(interval)
+            cur.execute('select value from logs where key = %s;', (key, ))
+            (value, ) = cur.fetchone()
+    return value
 
 
-def fetch_latest():
+def save_db(key, value):
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute('select value from logs where key = %s;', ('latest', ))
-            (latest, ) = cur.fetchone()
-    return float(latest)
+            cur.execute('update logs set value = %s where key = %s;', (value, key))
 
 
-def save_latest(value):
-    with get_connection() as conn:
-        with conn.cursor() as cur:
-            cur.execute('update logs set value = %s where key = %s;', (value, 'latest'))
+def get_name():
+    ep = f"https://api.line.me/v2/bot/profile/{USER}"
+    header = {"Authorization": f"Bearer {CAT}"}
+    req = requests.post(ep, headers=header)
+    return req.json()['displayName']
 
 
 def create_chat(text):
@@ -95,7 +94,7 @@ def create_chat(text):
         "voiceText": text,
         "clientData": {
             "option": {
-                "nickname": "ひろ",
+                "nickname": get_name(),
                 "sex": "女",
                 "bloodtype": "AB",
                 "birthdayY": 1968,
@@ -107,12 +106,13 @@ def create_chat(text):
                 "mode": "dialog"
             }
         },
-        "appRecvTime": "1999-01-01 00:00:00",
+        "appRecvTime": fetch_db('chat_time'),
         "appSendTime": now
     }
     req = requests.post(ep, data=json.dumps(body, ensure_ascii=False).encode('utf-8'), headers=header)
     if req.status_code == 200:
         chat = req.json()['systemText']['expression']
+        save_db('chat_time', req.json()['serverSendTime'])
     else:
         chat = "データと言ってくれるとデータ残量を調べてくるよ。"
     return chat
@@ -136,13 +136,13 @@ def timed_report():
     debug = os.environ.get('DEBUG', False)
 
     giga = fetch_giga()
-    latest = fetch_latest()
-    interval = fetch_interval()
+    latest = float(fetch_db('lateset'))
+    interval = int(fetch_db('interval'))
     if giga * 1000 // interval != latest * 1000 // interval:
         push_text(f"今月のデータ残量が残り {giga} GBになったよ！", USER)
         if debug:
             push_text(f"今月のデータ残量が残り {giga} GBになったよ！", MASTER)
-        save_latest(giga)
+        save_db('latest', giga)
 
 
 @route('/callback', method='POST')
