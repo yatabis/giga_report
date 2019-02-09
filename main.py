@@ -124,6 +124,9 @@ def callback():
                 reply_text('「データ」と言うとデータ残量を返すよ！', reply_token)
             else:
                 one_off_report(reply_token)
+        elif event['type'] == 'postback':
+            if event['postback']['data'] == 'data':
+                one_off_report(reply_token)
 
 
 if __name__ == '__main__':
