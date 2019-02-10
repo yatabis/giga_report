@@ -79,7 +79,8 @@ def save_db(key, value):
 def get_name():
     ep = f"https://api.line.me/v2/bot/profile/{USER}"
     header = {"Authorization": f"Bearer {CAT}"}
-    req = requests.post(ep, headers=header)
+    req = requests.get(ep, headers=header)
+    print(req.json())
     return req.json()['displayName']
 
 
