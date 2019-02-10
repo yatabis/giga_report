@@ -137,7 +137,7 @@ def timed_report():
     debug = os.environ.get('DEBUG', False)
 
     giga = fetch_giga()
-    latest = float(fetch_db('lateset'))
+    latest = float(fetch_db('latest'))
     interval = int(fetch_db('interval'))
     if giga * 1000 // interval != latest * 1000 // interval:
         push_text(f"今月のデータ残量が残り {giga} GBになったよ！", USER)
