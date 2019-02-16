@@ -112,6 +112,7 @@ def create_chat(text):
     }
     req = requests.post(ep, data=json.dumps(body, ensure_ascii=False).encode('utf-8'), headers=header)
     if req.status_code == 200:
+        pprint(req.json())
         chat = req.json()['systemText']['expression']
         save_db('chat_time', req.json()['serverSendTime'])
     else:
@@ -139,6 +140,9 @@ def timed_report():
     giga = fetch_giga()
     latest = float(fetch_db('latest'))
     interval = int(fetch_db('interval'))
+    # デバッグ用
+    print(f"latest:  {latest * 1000 // interval}")
+    print(f"current: {giga * 1000 // interval}")
     if giga * 1000 // interval != latest * 1000 // interval:
         push_text(f"今月のデータ残量が残り {giga} GBになったよ！", USER)
         if debug:
