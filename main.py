@@ -4,7 +4,7 @@ import os
 from pprint import pprint
 import time
 
-from bottle import run, route, request
+from bottle import run, route, request, HTTPResponse
 import chromedriver_binary
 import psycopg2
 import requests
@@ -148,6 +148,10 @@ def timed_report():
         if debug:
             push_text(f"今月のデータ残量が残り {giga} GBになったよ！", MASTER)
         save_db('latest', giga)
+
+    ret = HTTPResponse(status=200)
+    ret.set_header('Content-Type', 'text/html')
+    return ret
 
 
 @route('/callback', method='POST')
