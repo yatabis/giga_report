@@ -133,7 +133,6 @@ def one_off_report(token):
         push_text(f"今月のデータ残量は {giga} GBでした。", MASTER)
 
 
-@route('/report', method='POST')
 def timed_report():
     debug = os.environ.get('DEBUG', False)
 
