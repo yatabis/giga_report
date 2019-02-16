@@ -141,17 +141,13 @@ def timed_report():
     latest = float(fetch_db('latest'))
     interval = int(fetch_db('interval'))
     # デバッグ用
-    print(f"latest:  {latest * 1000 // interval}")
-    print(f"current: {giga * 1000 // interval}")
-    if giga * 1000 // interval != latest * 1000 // interval:
+    print(f"latest:  {int(latest * 1000 / interval)}")
+    print(f"current: {int(giga * 1000 / interval)}")
+    if int(giga * 1000 / interval) != int(latest * 1000 / interval):
         push_text(f"今月のデータ残量が残り {giga} GBになったよ！", USER)
         if debug:
             push_text(f"今月のデータ残量が残り {giga} GBになったよ！", MASTER)
         save_db('latest', giga)
-
-    ret = HTTPResponse(status=200)
-    ret.set_header('Content-Type', 'text/html')
-    return ret
 
 
 @route('/callback', method='POST')
