@@ -55,7 +55,7 @@ def fetch_giga():
         print(driver.current_url)
         driver.find_element_by_xpath("//*[@id='use-data']/div/div/div[1]/p/img").click()
         print(driver.current_url)
-        driver.implicitly_wait(5)
+        wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "span.remain.nums.fs-24")))
         gb = driver.find_element_by_css_selector("span.remain.nums.fs-24").text
         print(driver.current_url)
         print(gb)
