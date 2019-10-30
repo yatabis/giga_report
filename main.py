@@ -67,18 +67,21 @@ def fetch_giga():
         print(driver.current_url)
         driver.close()
         driver.quit()
-    except ElementClickInterceptedException:
+    except ElementClickInterceptedException as e:
         print("クリック関連のエラーが発生しました。")
+        print(e)
         driver.close()
         driver.quit()
         return "err"
-    except NoSuchElementException:
+    except NoSuchElementException as e:
         print("要素が存在しないエラーが発生しました。")
+        print(e)
         driver.close()
         driver.quit()
         return "err"
-    except Exception:
+    except Exception as e:
         print("予期していなかったエラーが発生しました。")
+        print(e)
         driver.close()
         driver.quit()
         return "err"
