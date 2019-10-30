@@ -38,6 +38,7 @@ def get_connection():
 def fetch_giga():
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
     driver = webdriver.Chrome(options=options)
 
     driver.get(os.environ.get('LOGIN_URL'))
