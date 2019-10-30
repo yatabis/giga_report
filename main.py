@@ -48,12 +48,12 @@ def fetch_giga():
     print(driver.current_url)
     driver.find_element_by_xpath("//*[@id='use-data']/div/div/div[1]/p/img").click()
     print(driver.current_url)
-    gb = driver.find_element_by_xpath(
-        "//*[@id='contents-body']/form/div[3]/div/div/div[2]/table/tbody/tr[2]/th/div/div[2]/span").text
+    driver.implicitly_wait(3)
+    gb = driver.find_element_by_css_selector("span.remain.nums.fs-24").text
     print(gb)
     driver.find_element_by_id('js-toggle-menu').click()
     driver.find_element_by_xpath('//*[@id="js-toggle-menu-contents"]/p[2]/a').click()
-    time.sleep(3)
+    time.sleep(2)
     print(driver.current_url)
 
     driver.close()
