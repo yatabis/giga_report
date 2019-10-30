@@ -79,12 +79,6 @@ def fetch_giga():
         driver.close()
         driver.quit()
         return "err"
-    except Exception as e:
-        print("予期していなかったエラーが発生しました。")
-        print(e)
-        driver.close()
-        driver.quit()
-        return "err"
 
     return float(gb)
 
