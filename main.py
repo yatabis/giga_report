@@ -37,6 +37,7 @@ def get_connection():
 
 def fetch_giga():
     options = webdriver.ChromeOptions()
+    options.binary_location = os.environ.get("GOOGLE_CHROME_SHIM")
     options.add_argument('--headless')
     options.add_argument('--disable-gpu')
     driver = webdriver.Chrome(options=options)
@@ -49,8 +50,9 @@ def fetch_giga():
     print(driver.current_url)
     driver.find_element_by_xpath("//*[@id='use-data']/div/div/div[1]/p/img").click()
     print(driver.current_url)
-    driver.implicitly_wait(3)
+    driver.implicitly_wait(5)
     gb = driver.find_element_by_css_selector("span.remain.nums.fs-24").text
+    print(driver.current_url)
     print(gb)
     driver.find_element_by_id('js-toggle-menu').click()
     driver.find_element_by_xpath('//*[@id="js-toggle-menu-contents"]/p[2]/a').click()
