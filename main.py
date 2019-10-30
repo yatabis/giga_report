@@ -11,7 +11,7 @@ import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support import expected_conditions as ec
 from selenium.common.exceptions import ElementClickInterceptedException, NoSuchElementException
 
 CAT = os.environ.get('CHANNEL_ACCESS_TOKEN')
@@ -61,7 +61,7 @@ def fetch_giga():
         print(gb)
         driver.execute_script("window.scrollTo({top: 1000, behavior: 'instant'});")
         driver.find_element_by_id('js-toggle-menu').click()
-        logout = wait.until(expected_conditions.element_to_be_clickable((By.XPATH, '//*[@id="js-toggle-menu-contents"]/p[2]/a')))
+        logout = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="js-toggle-menu-contents"]/p[2]/a')))
         logout.click()
         time.sleep(2)
         print(driver.current_url)
