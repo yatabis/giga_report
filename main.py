@@ -44,7 +44,7 @@ def fetch_giga():
     options.add_argument('--headless')
     options.add_argument('--disable-gpu')
     driver = webdriver.Chrome(options=options)
-    wait = WebDriverWait(driver, 2)
+    wait = WebDriverWait(driver, 5)
 
     try:
         driver.get(os.environ.get('LOGIN_URL'))
