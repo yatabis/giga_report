@@ -57,8 +57,10 @@ def fetch_giga():
         print(driver.current_url)
         wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "span.remain.nums.fs-24")))
         gb = driver.find_element_by_css_selector("span.remain.nums.fs-24").text
+        data = driver.find_element_by_css_selector("#use-data-chart-1 > section > div.below > div > p > span").text
+        nc = driver.find_element_by_css_selector("#contents-body > form > div.main-box.m-top-10 > div > div > div.unit-box > div > div > div.data-capacity > span").text
         print(driver.current_url)
-        print(gb)
+        print(gb, data, nc)
         driver.execute_script("window.scrollTo({top: 1000, behavior: 'instant'});")
         driver.find_element_by_id('js-toggle-menu').click()
         logout = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@id="js-toggle-menu-contents"]/p[2]/a')))
@@ -80,7 +82,7 @@ def fetch_giga():
         driver.quit()
         return "err"
 
-    return float(gb) - 48
+    return int((float(data) - float(gb) + float(nc)) * 100) / 100
 
 
 def fetch_db(key):
