@@ -80,7 +80,7 @@ def fetch_giga():
         driver.quit()
         return "err"
 
-    return float(gb)
+    return float(gb) - 48
 
 
 def fetch_db(key):
