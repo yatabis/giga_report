@@ -107,42 +107,6 @@ def get_name():
     return req.json()['displayName']
 
 
-def create_chat(text):
-    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    ep = f"https://api.apigw.smt.docomo.ne.jp/naturalChatting/v1/dialogue?APIKEY={API_KEY}"
-    header = {"Content-Type": "application/json;charset=UTF-8"}
-    body = {
-        "language": "ja-JP",
-        "botId": "Chatting",
-        "appId": APP_ID,
-        "voiceText": text,
-        "clientData": {
-            "option": {
-                "nickname": get_name(),
-                "sex": "女",
-                "bloodtype": "AB",
-                "birthdayY": 1968,
-                "birthdayM": 11,
-                "birthdayD": 5,
-                "age": 50,
-                "constellations": "蠍座",
-                "place": "大阪",
-                "mode": "dialog"
-            }
-        },
-        "appRecvTime": fetch_db('chat_time'),
-        "appSendTime": now
-    }
-    req = requests.post(ep, data=json.dumps(body, ensure_ascii=False).encode('utf-8'), headers=header)
-    if req.status_code == 200:
-        pprint(req.json())
-        chat = req.json()['systemText']['expression']
-        save_db('chat_time', req.json()['serverSendTime'])
-    else:
-        chat = "データと言ってくれると総データ使用量を調べてくるよ。"
-    return chat
-
-
 def one_off_report(token):
     debug = os.environ.get('DEBUG', False)
 
@@ -182,14 +146,10 @@ def callback():
         source = event['source']['userId']
         if event['type'] == 'message':
             message = event['message']
-            if not source == USER and not source == MASTER:
-                reply_text('ごめんなさい！個別のメッセージ返信にはまだ対応していないよ！', reply_token)
-            elif not message['type'] == 'text':
-                reply_text('テキストメッセージ以外には対応していないよ！', reply_token)
-            elif not message['text'] == "データ":
-                reply_text(create_chat(message['text']), reply_token)
-            else:
+            if source in [USER, MASTER] and message['type'] == 'text' and message['text'] == "データ":
                 one_off_report(reply_token)
+            else:
+                reply_text('ごめんなさい！個別のメッセージ返信にはまだ対応していないよ！', reply_token)
         elif event['type'] == 'postback':
             if event['postback']['data'] == 'action=data':
                 one_off_report(reply_token)
