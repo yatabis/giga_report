@@ -149,9 +149,9 @@ def one_off_report(token):
         push_text("データ残量の確認がリクエストされました。", MASTER)
 
     giga = fetch_giga()
-    push_text(f"おまたせ！\n今月のデータ残量は {giga} GBだよ!", USER)
+    push_text(f"おまたせ！\n今月のデータ残量は {giga:.2f} GBだよ!", USER)
     if debug:
-        push_text(f"今月のデータ残量は {giga} GBでした。", MASTER)
+        push_text(f"今月のデータ残量は {giga:.2f} GBでした。", MASTER)
 
 
 def timed_report():
@@ -166,9 +166,9 @@ def timed_report():
     print(f"latest:  {int(latest * 1000 / interval)}")
     print(f"current: {int(giga * 1000 / interval)}")
     if int(giga * 1000 / interval) != int(latest * 1000 / interval):
-        push_text(f"今月のデータ残量が残り {giga} GBになったよ！", USER)
+        push_text(f"今月のデータ残量が残り {giga:.2f} GBになったよ！", USER)
         if debug:
-            push_text(f"今月のデータ残量が残り {giga} GBになったよ！", MASTER)
+            push_text(f"今月のデータ残量が残り {giga:.2f} GBになったよ！", MASTER)
         save_db('latest', giga)
 
 
