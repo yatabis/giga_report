@@ -139,21 +139,21 @@ def create_chat(text):
         chat = req.json()['systemText']['expression']
         save_db('chat_time', req.json()['serverSendTime'])
     else:
-        chat = "データと言ってくれるとデータ残量を調べてくるよ。"
+        chat = "データと言ってくれると総データ使用量を調べてくるよ。"
     return chat
 
 
 def one_off_report(token):
     debug = os.environ.get('DEBUG', False)
 
-    reply_text("今月のデータ残量が知りたいんだね？\nわかった、調べてくるよ！\nちょっと待っててね！\n\n※この処理は最大で3分程かかる事があります。", token)
+    reply_text("今月の総データ使用量が知りたいんだね？\nわかった、調べてくるよ！\nちょっと待っててね！\n\n※この処理は最大で3分程かかる事があります。", token)
     if debug:
-        push_text("データ残量の確認がリクエストされました。", MASTER)
+        push_text("総データ使用量の確認がリクエストされました。", MASTER)
 
     giga = fetch_giga()
-    push_text(f"おまたせ！\n今月のデータ残量は {giga:.2f} GBだよ!", USER)
+    push_text(f"おまたせ！\n今月の総データ使用量は {giga:.2f} GBだよ!", USER)
     if debug:
-        push_text(f"今月のデータ残量は {giga:.2f} GBでした。", MASTER)
+        push_text(f"今月の総データ使用量は {giga:.2f} GBでした。", MASTER)
 
 
 def timed_report():
@@ -168,9 +168,9 @@ def timed_report():
     print(f"latest:  {int(latest * 1000 / interval)}")
     print(f"current: {int(giga * 1000 / interval)}")
     if int(giga * 1000 / interval) != int(latest * 1000 / interval):
-        push_text(f"今月のデータ残量が残り {giga:.2f} GBになったよ！", USER)
+        push_text(f"今月の総データ使用量が残り {giga:.2f} GBになったよ！", USER)
         if debug:
-            push_text(f"今月のデータ残量が残り {giga:.2f} GBになったよ！", MASTER)
+            push_text(f"今月の総データ使用量が残り {giga:.2f} GBになったよ！", MASTER)
         save_db('latest', giga)
 
 
