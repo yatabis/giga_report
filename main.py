@@ -168,9 +168,9 @@ def timed_report():
     print(f"latest:  {int(latest * 1000 / interval)}")
     print(f"current: {int(giga * 1000 / interval)}")
     if int(giga * 1000 / interval) != int(latest * 1000 / interval):
-        push_text(f"今月の総データ使用量が残り {giga:.2f} GBになったよ！", USER)
+        push_text(f"今月の総データ使用量が {giga:.2f} GBになったよ！", USER)
         if debug:
-            push_text(f"今月の総データ使用量が残り {giga:.2f} GBになったよ！", MASTER)
+            push_text(f"今月の総データ使用量が {giga:.2f} GBになったよ！", MASTER)
         save_db('latest', giga)
 
 
